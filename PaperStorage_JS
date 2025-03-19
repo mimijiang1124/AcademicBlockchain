@@ -1,0 +1,20 @@
+const { Contract } = require('fabric-contract-api');
+
+class PaperStorage extends Contract {
+    async InitLedger(ctx) {
+        await ctx.stub.putState('tokenSupply', Buffer.from('1000'));
+    }
+
+    async AddPaper(ctx, title, author, content) {
+        const paper = { title, author, content };
+        await ctx.stub.putState(title, Buffer.from(JSON.stringify(paper)));
+        await ctx.stub.putState('tokenSupply', Buffer.from('900'));
+    }
+
+    async GetPaper(ctx, title) {
+        const paper = await ctx.stub.getState(title);
+        return paper.toString();
+    }
+}
+
+module.exports = PaperStorage;
